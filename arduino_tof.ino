@@ -274,6 +274,7 @@ void loop()
         if (incoming_msg.data[0]) {
           handServo.write(HAND_CLOSED);
         } else if (!incoming_msg.data[0]) {
+          handServo.write(HAND_OPEN);
         }
         incoming_msg.len = 0;
       }
