@@ -8,7 +8,7 @@
 #include <Servo.h>
 #include "vl53l0x-arduino/VL53L0X.h"
 
-#define NUM_SENSORS 6
+#define NUM_SENSORS 5
 VL53L0X range_sensors[NUM_SENSORS]; // clockwise starting with looking forward
 
 // Uncomment this line to use long range mode. This
@@ -214,12 +214,11 @@ void setup()
   // setup i2c VL53LOX range finder sensor sampling
   Wire.begin();
 
-  sensor_pins[0] = 17;
+  sensor_pins[0] = 8;
   sensor_pins[1] = 9;
   sensor_pins[2] = 10;
   sensor_pins[3] = 12;
-  sensor_pins[4] = 13;
-  sensor_pins[5] = 14;
+  sensor_pins[4] = 11;
 
   // disable all sensors
   for (i = 0; i < NUM_SENSORS; i++) {
@@ -232,8 +231,8 @@ void setup()
     delay(5);
     
     range_sensors[i].init();
-    range_sensors[i].setAddress(10);
-    range_sensors[i].setTimeout(500);
+    range_sensors[i].setAddress(10*i);
+    range_sensors[i].setTimeout(250);
 
 #if defined LONG_RANGE
     // lower the return signal rate limit (default is 0.25 MCPS)
@@ -246,9 +245,11 @@ void setup()
 #if defined HIGH_SPEED
     // reduce timing budget to 20 ms (default is about 33 ms)
     range_sensors[i].setMeasurementTimingBudget(20000);
-    #elif defined HIGH_ACCURACY
+#elif defined HIGH_ACCURACY
     // increase timing budget to 200 ms
     range_sensors[i].setMeasurementTimingBudget(200000);
+#else
+    range_sensors[i].setMeasurementTimingBudget(50000);
 #endif
     delay(5);
   }
